@@ -1,0 +1,10 @@
+{
+  "name": "curriculo-rapido",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@sparticuz/chromium": "latest",
+    "puppeteer-core": "latest"
+  }
+}

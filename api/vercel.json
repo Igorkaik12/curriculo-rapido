@@ -1,0 +1,6 @@
+{
+  "functions": {
+    "api/webhook.js": { "maxDuration": 60, "memory": 1024 },
+    "api/status.js": { "maxDuration": 60, "memory": 1024 }
+  }
+}

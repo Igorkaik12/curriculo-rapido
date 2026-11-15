@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Lora:wght@400;600&family=Montserrat:wght@500;700&family=Source+Sans+3:wght@400;600&family=Poppins:wght@400;500;600&family=Outfit:wght@400;500;600&family=EB+Garamond:wght@400;600;700&family=Cormorant+Garamond:wght@600;700&display=swap">
+<title>Impressão do currículo</title>
+<style>
+:root{--b:#0b4fe0;--bd:#0a3aa8;--bg:#f6f8fc;--t:#12182b;--m:#5b6477;--l:#dfe5f1}
+*{box-sizing:border-box}body{margin:0;font-size:16px;line-height:1.6;font-family:'Plus Jakarta Sans',system-ui,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;color:var(--t);background:var(--bg)}
+header,main,footer{max-width:960px;margin:auto;padding:20px}
+.logo{font-weight:800;font-size:23px;letter-spacing:-.03em}.logo span{color:var(--b)}
+h1{font-size:clamp(30px,6vw,50px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:.4em 0}h2,h3{letter-spacing:-.015em}
+.btn{display:inline-block;background:var(--b);color:#fff;border:0;border-radius:12px;padding:14px 24px;font-weight:700;font-size:16px;font-family:inherit;letter-spacing:-.005em;cursor:pointer}
+.btn:hover{background:var(--bd)}.btn:disabled{opacity:.5;cursor:not-allowed}.btn.o{background:#fff;color:var(--b);border:1.5px solid var(--b)}
+.hero{padding:30px 0 10px}.hero p{color:var(--m);max-width:520px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:#fff;border:1.5px solid var(--l);border-radius:14px;padding:14px;cursor:pointer}
+.card.sel{border-color:var(--b);box-shadow:0 0 0 3px #0b4fe033}
+.card h3{margin:10px 0 2px}.price{font-weight:800;color:var(--b)}.rec{display:inline-block;background:#fff3c4;color:#7a5b00;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;margin-left:6px}
+section{margin:36px 0}.more summary{cursor:pointer;font-weight:700;color:var(--b);margin-top:18px;padding:6px 0}.more[open] summary{margin-bottom:2px}
+label{display:block;font-weight:600;margin-top:14px;font-size:14px}
+input,textarea{width:100%;padding:11px;border:1.5px solid var(--l);border-radius:10px;font:inherit;background:#fff}
+small{color:var(--m)}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:#fff;border:1.5px solid var(--l);border-radius:14px;padding:20px}
+.pv{zoom:var(--z,1)}.thumb{height:340px;overflow:hidden;border-radius:8px;border:1px solid var(--l);--z:.3}
+.cv{width:794px;min-height:1123px;background:#fff;color:#222;font-size:14px;line-height:1.5;font-family:var(--f,'Plus Jakarta Sans',system-ui,sans-serif);overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact;--a:#0b4fe0}
+.cv h2{margin:0;font-size:32px;line-height:1.1;font-family:var(--fh,var(--f,'Plus Jakarta Sans',sans-serif));letter-spacing:-.01em}.cv h4{font-family:var(--fh,var(--f,'Plus Jakarta Sans',sans-serif))}.cv p{margin:4px 0 0}.cv img{width:104px;height:104px;border-radius:50%;object-fit:cover;flex:none}
+.top{display:flex;gap:22px;align-items:center;padding:38px 48px}.body{padding:8px 48px 40px}
+.cv h4{margin:24px 0 8px;font-size:13px;color:var(--a)}.cv .bl{margin-bottom:9px}
+.ic{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}.ct{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:9px;font-size:13px}.ct span{display:inline-flex;align-items:center;gap:6px}.t2 .ct,.t6 .ct{justify-content:center}.side .ct{flex-direction:column;align-items:flex-start;gap:10px;text-align:left;font-size:12.5px}.side .ct span{align-items:flex-start;word-break:break-all}.side .ct .ic{margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{padding:3px 11px;border-radius:99px;background:#e8efff;color:var(--a);font-size:12px}
+.t1{--f:'Plus Jakarta Sans',sans-serif}.t1 .top{background:#0b4fe0;color:#fff}.t1 h4{border-left:4px solid var(--a);padding-left:10px}
+.t2{--a:#a8693a;--f:'Lora',Georgia,serif;--fh:'Playfair Display',Georgia,serif}.t2 .top{flex-direction:column;text-align:center;background:#fdf6ef}.t2 h2{text-transform:uppercase;letter-spacing:.12em;font-size:28px}
+.t2 h4{border-bottom:1px solid #e3cdb8;padding-bottom:4px;letter-spacing:.1em;text-transform:uppercase}.t2 .chip{background:none;border:1px solid #d9a066;color:#7a4a22}
+.t3{--a:#16203a;--f:'Source Sans 3','Segoe UI',sans-serif;--fh:'Montserrat',sans-serif;font-size:15px}.t3 .top{background:#16203a;color:#fff}.t3 h4{background:#e6e8ee;padding:4px 10px;text-transform:uppercase;letter-spacing:.06em}.t3 .chip{background:#16203a;color:#fff;border-radius:3px}
+.t6{--a:#111;--f:'EB Garamond',Georgia,serif;--fh:'Cormorant Garamond',Georgia,serif;font-size:16px}.t6 h2{font-size:42px;font-weight:700}.t6 .top{flex-direction:column;text-align:center;border-bottom:4px double #111;margin:0 48px;padding:38px 0 18px}.t6 h2{font-variant:small-caps;letter-spacing:.06em}
+.t6 h4{border-bottom:1px solid #111;text-transform:uppercase;letter-spacing:.1em;padding-bottom:3px}.t6 .chip{background:none;color:#111;padding:0;border-radius:0}.t6 .chip:not(:last-child)::after{content:" ·"}
+.side{display:flex}.side aside{width:262px;flex:none;padding:40px 24px;color:#fff;min-height:1123px;text-align:center}.side aside img{margin:0 auto 14px;display:block;border:4px solid #fff5}
+.side aside h4{color:#fff;border-bottom:1px solid #fff6;padding-bottom:4px;text-align:left}.side aside p{font-size:12.5px;word-break:break-word}.side .main{flex:1;padding:44px 40px}.side .main h2{color:var(--a);margin-bottom:6px}
+.side aside .chips{justify-content:flex-start}.side aside .chip{background:#fff3;color:#fff}.t4{--a:#7c3aed;--f:'Poppins',sans-serif;font-size:13.5px}.t4 aside{background:linear-gradient(180deg,#7c3aed,#ec4899)}
+.t5{--a:#0f9488;--f:'Outfit',sans-serif;--fh:'Outfit',sans-serif;font-size:15px}.t5 aside{background:#0f9488}.t5 .main h4{border-bottom:2px solid var(--a);padding-bottom:3px}
+#pix{display:none;text-align:center}#pix textarea{height:84px;font-size:12px;margin-top:8px}#qr{width:220px;height:220px;max-width:70vw;border:1.5px solid var(--l);border-radius:12px;padding:8px;background:#fff}.wa{background:#f0fbf4;border:1.5px solid #bfe8cc;border-radius:12px;padding:14px;margin-top:16px}.wa h3{margin:0 0 4px;font-size:16px}.ck{display:flex;gap:8px;font-weight:400;align-items:flex-start}.ck input{width:auto;margin-top:5px}.lnk{background:none;border:0;color:var(--b);font:inherit;font-weight:600;cursor:pointer;text-decoration:underline;padding:6px}
+#msg{margin-top:10px;font-weight:600}.warn{background:#fff7e0;border:1px solid #f0d58a;border-radius:10px;padding:10px;font-size:14px}
+dialog{max-width:680px;width:92%;border:0;border-radius:14px;padding:24px;max-height:85vh}dialog::backdrop{background:#0008}
+dialog h3{margin-top:18px}footer{color:var(--m);font-size:13px;text-align:center}footer a{color:var(--b);cursor:pointer}
+@page{size:A4;margin:0}
+@media print{body{background:#fff}header,main,footer,dialog{display:none!important}#printarea{display:block!important}.cv{min-height:297mm}}
+#printarea{display:none}
+</style>
+<style>body{background:#fff}</style></head><body>
+<div id="root"></div>
+<script>
+const esc=s=>(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const blocks=t=>(t||"").trim()?esc(t).split(/\n\s*\n|(?<=\.)\n(?=\S)/).map(b=>{const l=b.split("\n");return `<div class="bl"><b>${l[0]}</b>${l.length>1?"<br>"+l.slice(1).join("<br>"):""}</div>`}).join(""):"";
+const chips=t=>(t||"").split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
+const I={pin:'<path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',ph:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/>',ml:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',lk:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',us:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',car:'<path d="M5 16l1.5-5h11L19 16"/><rect x="3" y="16" width="18" height="4" rx="1"/>'};
+function ctl(d){const loc=[d.cid,d.bai].filter(Boolean).join(" - ");
+return [[I.pin,loc],[I.ph,d.tel],[I.ml,d.mail],[I.lk,d.lnk],[I.us,d.ida?d.ida+" anos":""],[I.car,d.cnh?"CNH "+d.cnh:""]].filter(x=>x[1]).map(x=>`<span><svg class="ic" viewBox="0 0 24 24">${x[0]}</svg>${esc(x[1])}</span>`).join("")}
+function cv(d,n){d=d||cur();n=(n==null?sel:n)+1;
+const loc=[d.cid,d.bai].filter(Boolean).map(esc).join(" - "),img=d.foto?`<img src="${d.foto}" alt="">`:"",nome=esc(d.nome)||"Seu Nome";
+const sec=(t,h)=>h?`<h4>${t}</h4>${h}`:"",ch=t=>t?`<div class="chips">${chips(t)}</div>`:"";
+const idi=(d.idi||"").trim()?ch(d.idi):"";
+if(n==4||n==5)return `<div class="cv t${n} side"><aside>${img}<h4>Contato</h4><div class="ct">${ctl(d)}</div>${d.hab?`<h4 style="margin-top:26px">Habilidades</h4>${ch(d.hab)}`:""}${idi?`<h4 style="margin-top:26px">Idiomas</h4>${idi}`:""}</aside><div class="main"><h2>${nome}</h2>${sec("Objetivo profissional",blocks(d.obj))}${sec("Experiência profissional",blocks(d.exp))}${sec("Formação acadêmica",blocks(d.for))}${sec("Cursos e qualificações",blocks(d.cur))}${sec("Informações adicionais",blocks(d.adc))}</div></div>`;
+return `<div class="cv t${n}"><div class="top">${img}<div><h2>${nome}</h2><div class="ct">${ctl(d)}</div></div></div><div class="body">${sec("Objetivo profissional",blocks(d.obj))}${sec("Experiência profissional",blocks(d.exp))}${sec("Formação acadêmica",blocks(d.for))}${sec("Cursos e qualificações",blocks(d.cur))}${sec("Habilidades",ch(d.hab))}${sec("Idiomas",idi)}${sec("Informações adicionais",blocks(d.adc))}</div></div>`}
+
+// Usada pelo servidor (api/_lib/pdf.js) para montar o currículo antes de gerar o PDF.
+window.renderCv=function(d,modelo){document.getElementById("root").innerHTML=cv(d,modelo)};
+</script></body></html>
