@@ -1,63 +1,112 @@
-// Cria o link de pagamento na InfinitePay para o modelo escolhido.
-// OS PREÇOS DE VERDADE FICAM AQUI (em centavos). O site só mostra, quem cobra é este arquivo.
-const crypto = require("crypto");
+// api/criar-cobranca.js
+// Cria o link de pagamento na InfinitePay e guarda o pedido no Redis (Vercel KV).
 
-const MODELOS = [
-  ["Primeiro Emprego", 599],            // R$ 5,99
-  ["Jovem Aprendiz", 699],              // R$ 6,99
-  ["Corporativo", 799],                 // R$ 7,99
-  ["Criativo", 849],                    // R$ 8,49
-  ["Moderno", 949],                     // R$ 9,49
-  ["Primeiro Emprego Clássico", 999],   // R$ 9,99
+const PRECOS = [599, 699, 799, 849, 949, 999]; // centavos, na mesma ordem dos modelos do site
+const NOMES = [
+  "Primeiro Emprego",
+  "Jovem Aprendiz",
+  "Corporativo",
+  "Criativo",
+  "Moderno",
+  "Primeiro Emprego Clássico",
 ];
 
-const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 async function redis(cmd) {
-  const r = await fetch(REDIS_URL, {
+  const r = await fetch(process.env.KV_REST_API_URL, {
     method: "POST",
-    headers: { Authorization: "Bearer " + REDIS_TOKEN },
+    headers: { Authorization: "Bearer " + process.env.KV_REST_API_TOKEN },
     body: JSON.stringify(cmd),
   });
-  return (await r.json()).result;
+  const j = await r.json();
+  if (j.error) throw new Error("Redis: " + j.error);
+  return j.result;
 }
 
-module.exports = async (req, res) => {
-  if (req.method !== "POST") return res.status(405).json({ erro: "método não permitido" });
+async function criarLink(payload) {
+  const urls = [
+    "https://api.checkout.infinitepay.io/links",
+    "https://api.infinitepay.io/invoices/public/checkout/links",
+  ];
+  let ultimo = "";
+  for (const u of urls) {
+    try {
+      const r = await fetch(u, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const texto = await r.text();
+      let j = {};
+      try { j = JSON.parse(texto); } catch (e) {}
+      if (r.ok && j.url) return j.url;
+      ultimo = u + " -> " + r.status + " " + texto.slice(0, 300);
+      console.error("InfinitePay recusou:", ultimo);
+    } catch (e) {
+      ultimo = u + " -> " + e.message;
+      console.error("Falha ao chamar InfinitePay:", ultimo);
+    }
+  }
+  throw new Error(ultimo || "sem resposta");
+}
+
+module.exports = async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).json({ erro: "metodo" });
+
   try {
-    if (!process.env.INFINITEPAY_HANDLE) return res.status(500).json({ erro: "handle não configurado" });
-    const { modelo, nome, email } = req.body || {};
-    const idx = Number(modelo);
-    const m = MODELOS[idx];
-    if (!Number.isInteger(idx) || !m) return res.status(400).json({ erro: "modelo inválido" });
-    if (!nome || !/^\S+@\S+\.\S+$/.test(email || "")) return res.status(400).json({ erro: "dados inválidos" });
+    const handle = process.env.INFINITEPAY_HANDLE;
+    const base = (
+      process.env.APP_URL ||
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? "https://" + process.env.VERCEL_PROJECT_PRODUCTION_URL
+        : "")
+    ).replace(/\/+$/, "");
 
-    const order_nsu = crypto.randomUUID();
-    const host = req.headers["x-forwarded-host"] || req.headers.host;
-
-    const r = await fetch("https://api.checkout.infinitepay.io/links", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        handle: process.env.INFINITEPAY_HANDLE,
-        order_nsu,
-        redirect_url: "https://" + host + "/",
-        items: [{ quantity: 1, price: m[1], description: "Currículo - " + m[0] }],
-        customer: { name: String(nome).slice(0, 100), email: String(email).slice(0, 100) },
-      }),
-    });
-    const d = await r.json().catch(() => ({}));
-    const url = d.url || d.link || d.checkout_url;
-    if (!r.ok || !url) {
-      console.error("InfinitePay respondeu:", r.status, JSON.stringify(d));
-      return res.status(502).json({ erro: "falha ao criar cobrança" });
+    if (!handle || !base || !process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+      console.error("Faltam variáveis de ambiente (INFINITEPAY_HANDLE, APP_URL, KV_REST_API_URL, KV_REST_API_TOKEN)");
+      return res.status(500).json({ erro: "config" });
     }
 
-    // guarda o pedido por 30 dias (modelo + valor esperado)
-    await redis(["SET", "pedido:" + order_nsu, JSON.stringify({ modelo: idx, cents: m[1] }), "EX", 2592000]);
-    return res.status(200).json({ url, order_nsu });
+    const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    const modelo = Number(body.modelo);
+    if (!Number.isInteger(modelo) || modelo < 0 || modelo >= PRECOS.length) {
+      return res.status(400).json({ erro: "modelo" });
+    }
+
+    const orderNsu = crypto.randomUUID();
+    const price = PRECOS[modelo];
+
+    // Guarda só o necessário (sem dados pessoais): modelo, preço e status.
+    await redis([
+      "SET",
+      "order:" + orderNsu,
+      JSON.stringify({ modelo, price, status: "pending" }),
+      "EX",
+      60 * 60 * 24 * 30,
+    ]);
+
+    const payload = {
+      handle,
+      order_nsu: orderNsu,
+      redirect_url: base + "/",
+      items: [{ quantity: 1, price, description: "Currículo Rápido - " + NOMES[modelo] }],
+    };
+
+    const nome = String(body.nome || "").trim();
+    const email = String(body.email || "").trim();
+
+    let url;
+    try {
+      url = await criarLink(
+        nome && email ? { ...payload, customer: { name: nome, email } } : payload
+      );
+    } catch (e) {
+      // tenta de novo sem os dados do cliente, caso o pré-preenchimento seja o problema
+      url = await criarLink(payload);
+    }
+
+    return res.status(200).json({ url, order_nsu: orderNsu });
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({ erro: "erro interno" });
+    console.error("criar-cobranca erro:", e);
+    return res.status(500).json({ erro: "interno" });
   }
 };
